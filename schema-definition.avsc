@@ -1,0 +1,11 @@
+{
+    "type": "record",
+    "namespace": "com.man.learn",
+    "name": "Type1",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string"
+        }
+    ]
+}
