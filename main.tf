@@ -6,8 +6,15 @@ provider "google" {
 
 resource "google_pubsub_topic" "example_topic" {
   name = var.topic_name
+
+  depends_on = [ google_pubsub_schema.example_schema ]
 }
 
+resource "google_pubsub_topic" "topic_dead_letter" {
+  name = var.dead_letter_topic_name
+
+  depends_on = [ google_pubsub_schema.example_schema ]
+}
 
 resource "google_pubsub_schema" "example_schema" {
   project = var.project_id
@@ -27,17 +34,12 @@ resource "google_pubsub_subscription" "example_subscription" {
   # Exactly once delivery and message ordering
   dead_letter_policy {
     max_delivery_attempts = 5
-    dead_letter_topic     = google_pubsub_topic.example_topic.name
+    dead_letter_topic     = google_pubsub_topic.example_topic.id
   }
 
   # Retry configuration
   retry_policy {
     minimum_backoff      = "5s"
     maximum_backoff      = "60s"
-  }
-
-  # Schema settings
-  schema_settings {
-    schema = google_pubsub_schema.example_schema.name
   }
 }
